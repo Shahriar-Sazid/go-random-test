@@ -5,11 +5,6 @@ import (
 	"fmt"
 )
 
-type Name1 struct {
-	FirstName  string `json:"first_name"`
-	SecondName string `json:"second_name"`
-}
-
 func MarshalTest1() {
 	n1 := Name1{
 		FirstName:  "Shahriar",

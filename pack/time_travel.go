@@ -1,5 +1,5 @@
 // examples/examples.go
-package main
+package pack
 
 import (
 	"fmt"
