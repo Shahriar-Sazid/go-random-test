@@ -1,0 +1,23 @@
+
+
+
+
+
+
+                                                            viw -> select in word
+                                                            vi( -> (select in enclosing first bracket)
+                                                            vi{ -> {select in enclosing second bracket}
+                                                            vi[ -> [select in enclosing third bracket]
+                                                            vi" -> "select in enclosing double quote"
+                                                            vi' -> 'select in enclosing single quote'
+                                                            vi` -> `select in enclosing backtick`
+                                                            vi< -> <select in enclosing tag >
+
+                                                            ciw -> cut in word
+                                                            ci( -> cut in enclosing first bracket
+                                                            ci{ -> cut in enclosing second bracket
+                                                            ci[ -> cut in enclosing third bracket
+                                                            ci" -> cut in enclosing double quote
+                                                            ci' -> cut in enclosing single quote
+                                                            ci` -> cut in enclosing backtick
+                                                            ci< -> cut in enclosing tag >

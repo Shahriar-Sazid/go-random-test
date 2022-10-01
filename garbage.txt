@@ -1,0 +1,14 @@
+func (a Adapter) FilterPhaseWithActionState(phaseIDList []uint) (idList []uint, cErr errors.Error) {
+	subQuery := a.db.Select("campaign_phase_id as pid, COUNT(id) as cnt").
+		Table("phase_action").
+		Group("campaign_phase_id").
+		Where("has_state = ? and campaign_phase_id IN ?", true, phaseIDList)
+
+	if err := a.db.Select("sub.pid").
+		Table("(?) as sub", subQuery).
+		Where("sub.cnt > ?", 0).
+		Scan(&idList).Error; err != nil {
+		return nil, errors.InternalDBError(err)
+	}
+	return
+}
