@@ -12,10 +12,10 @@ import (
 type Post struct {
 	Body       string `gorm:"type:text"`
 	CreatedAt  *time.Time
-	Id         string `gorm:"type:uuid;primary_key"`
-	Liked      bool   `gorm:"-"`
-	Likes      []Like `gorm:"polymorphic:Owner"`
-	LikesCount uint32 `gorm:"-"`
+	Id         string  `gorm:"type:uuid;primary_key"`
+	Liked      bool    `gorm:"-"`
+	Likes      []*Like `gorm:"polymorphic:Owner"`
+	LikesCount uint32  `gorm:"-"`
 	UpdatedAt  *time.Time
 	User       *User `gorm:"foreignkey:UserId;association_foreignkey:Id"`
 	UserId     *string
@@ -64,15 +64,14 @@ func createTestData(db *gorm.DB) {
 	if err != nil {
 		log.Println("failed to create user data")
 	}
+	like := Like{
+		Id:     "45ba45fc-0900-4fcc-80dd-c394170b777b",
+		UserId: &users[0].Id,
+	}
 	post := Post{
-		Id:   "4cebb4c7-d44e-4160-a2df-a06f43211d45",
-		Body: "Test Post",
-		Likes: []Like{
-			{
-				Id:     "45ba45fc-0900-4fcc-80dd-c394170b777b",
-				UserId: &users[0].Id,
-			},
-		},
+		Id:     "4cebb4c7-d44e-4160-a2df-a06f43211d45",
+		Body:   "Test Post",
+		Likes:  []*Like{&like},
 		UserId: &users[1].Id,
 	}
 	err = db.Create(&post).Error
