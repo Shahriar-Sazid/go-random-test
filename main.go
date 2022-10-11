@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Shahriar-Sazid/go-random-test/storage"
+import "github.com/Shahriar-Sazid/go-random-test/pack"
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
@@ -13,6 +13,7 @@ func main() {
 	// res, _ := pack.PageTest(pack.Paging{NextOffset: int(offSet), BatchSize: int(batchSize)})
 	// fmt.Println(res)
 
-	storage.GormTest()
+	// storage.GormTest()
+	pack.Dedup()
 
 }
