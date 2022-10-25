@@ -12,7 +12,7 @@ func mapToAnotherFunction(m map[string]name) {
 	m["new_word"] = name{name: "abc"}
 }
 
-func basic_test() {
+func Basic_test() {
 	list := [10]name{}
 	// list := make([]name, 0, 10)
 
@@ -101,4 +101,21 @@ func basic_test() {
 	}
 
 	fmt.Println(FeatureListResponse{})
+
+	var list2 []int
+	list2 = nil
+	fmt.Println(list2)
+	list2 = append(list2, 10)
+	fmt.Println("abc")
+	fmt.Println(list2)
+	a := map[string]name{}
+	a["abc"] = name{
+		name: "sazid",
+	}
+
+	t := a["abc"]
+	t.name = "ahmed"
+	fmt.Println("changed", t)
+	fmt.Println("changed", a)
+
 }
