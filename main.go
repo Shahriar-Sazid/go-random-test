@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/pack"
+	vr "github.com/Shahriar-Sazid/go-random-test/value_ref"
 )
 
 func main() {
@@ -15,6 +15,6 @@ func main() {
 	// fmt.Println(res)
 
 	// storage.GormTest()
-	// pack.Valuate_test()
-	pack.MapTest()
+
+	vr.ValueOrRef()
 }

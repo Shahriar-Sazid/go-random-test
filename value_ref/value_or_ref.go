@@ -1,17 +1,18 @@
-package pack
+package vr
 
 import (
 	"fmt"
 )
 
-func valueOrRef() {
+func ValueOrRef() {
 	valueExample()
 	refExample()
 }
 
 func valueExample() {
 	fmt.Println("Value example")
-	a := []int{1, 2, 3, 4, 5, 6}
+	a := [...]int{1, 2, 3, 4, 5, 6}
+	// a := [6]int{1, 2, 3, 4, 5, 6}
 	// a = nil //gives error
 	b := a
 	b[0] = -1

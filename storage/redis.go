@@ -10,18 +10,10 @@ import (
 var ctx = context.Background()
 
 func RedisTest() {
-	// "redis_conf": {
-	//     "host": "redis://redis:d9IU3Wwu06@itihas-redis-master.de-stage-itihas",
-	//     "port": 6379,
-	//     "db": 0,
-	//     "bucket_size": 10000,
-	//     "ttl_day_end": false,
-	//     "ttl": "2m"
-	//   },
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "itihas-redis-master:6379",
-		Password: "d9IU3Wwu06", // no password set
-		DB:       0,            // use default DB
+		Addr:     "",
+		Password: "", // no password set
+		DB:       0,  // use default DB
 	})
 
 	err := rdb.Set(ctx, "key", "value", 0).Err()
