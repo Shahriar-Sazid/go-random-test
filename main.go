@@ -1,12 +1,13 @@
 package main
 
-import "github.com/Shahriar-Sazid/go-random-test/pack"
+import (
+	"github.com/Shahriar-Sazid/go-random-test/pack"
+)
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
 	// httpConnectionTest()
 	// httpConnectionTestMultiThread()
-	// basic_test()
 	// offSet, _ := strconv.ParseInt(os.Args[1], 10, 0)
 	// batchSize, _ := strconv.ParseInt(os.Args[2], 10, 0)
 	// fmt.Println(offSet, batchSize)
@@ -14,6 +15,6 @@ func main() {
 	// fmt.Println(res)
 
 	// storage.GormTest()
-	pack.Dedup()
-
+	// pack.Valuate_test()
+	pack.MapTest()
 }

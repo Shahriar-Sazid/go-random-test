@@ -1,12 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div></div>
-</body>
-</html>
+<div>
+    <span>Hi {{name}},</span>
+    <br>
+    <span>You are welcome to a new campaign. Here is the details</span>
+    <table
+        style='border-collapse:collapse;margin:25px 0;font: size 0.9em;font-family:sans-serif;min-width:300pd;box-shadow:0 0 20px rgba(0, 0, 0, 0.15)'>
+        <thead>
+            <tr style='background-color: #009879;color: #ffffff;text-align: left;'>
+                <th style='padding: 12px 15px;'>Info</th>
+                <th style='padding: 12px 15px;'>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style='padding: 12px 15px;'>CR for last week</td>
+                <td style='padding: 12px 15px;'>{{cr_7d}}</td>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Rating for last week</td>
+                <td style='padding: 12px 15px;'>{{rating_7d}}</td>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Phone number</td>
+                <td style='padding: 12px 15px;'>{{phone_number}}</td>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Phase Duration</td>
+                <td style='padding: 12px 15px;'>{{duration}}</>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Day Elapsed</td>
+                <td style='padding: 12px 15px;'>{{day_elapsed}}</td>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Day Left</td>
+                <td style='padding: 12px 15px;'>{{day_left}}</td>
+            </tr>
+            <tr>
+                <td style='padding: 12px 15px;'>Email</td>
+                <td style='padding: 12px 15px;'>{{email}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

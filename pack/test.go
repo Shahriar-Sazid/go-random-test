@@ -1,6 +1,10 @@
 package pack
 
-import "fmt"
+import (
+	"fmt"
+
+	"golang.org/x/exp/constraints"
+)
 
 type name struct {
 	name string
@@ -10,6 +14,16 @@ func mapToAnotherFunction(m map[string]name) {
 	m["hello"] = name{name: "abc"}
 	m["world"] = name{name: "abc"}
 	m["new_word"] = name{name: "abc"}
+}
+
+func min[T constraints.Ordered](a T, b ...T) T {
+	x := a
+	for _, v := range b {
+		if x > v {
+			x = v
+		}
+	}
+	return x
 }
 
 func Basic_test() {
@@ -118,4 +132,6 @@ func Basic_test() {
 	fmt.Println("changed", t)
 	fmt.Println("changed", a)
 
+	fmt.Println(min(1, 2, 3))
+	fmt.Println(min(1))
 }
