@@ -13,5 +13,5 @@ func main() {
 	// fmt.Println(res)
 
 	// template.TemplateTest()
-	storage.GormTest3()
+	storage.GormTest4()
 }
