@@ -1,4 +1,4 @@
-module test
+module github.com/Shahriar-Sazid/go-random-test
 
 go 1.18
 
