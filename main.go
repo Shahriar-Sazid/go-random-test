@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Shahriar-Sazid/go-random-test/storage"
+import "test/storage"
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
@@ -12,6 +12,6 @@ func main() {
 	// res, _ := pack.PageTest(pack.Paging{NextOffset: int(offSet), BatchSize: int(batchSize)})
 	// fmt.Println(res)
 
-	storage.GormTest2()
 	// template.TemplateTest()
+	storage.GormTest3()
 }
