@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type Post struct {
+type Post1 struct {
 	Body       string `gorm:"type:text"`
 	CreatedAt  *time.Time
 	Id         string  `gorm:"type:uuid;primary_key"`
@@ -17,11 +17,11 @@ type Post struct {
 	Likes      []*Like `gorm:"polymorphic:Owner"`
 	LikesCount uint32  `gorm:"-"`
 	UpdatedAt  *time.Time
-	User       *User `gorm:"foreignkey:UserId;association_foreignkey:Id"`
+	User       *User1 `gorm:"foreignkey:UserId;association_foreignkey:Id"`
 	UserId     *string
 }
 
-func (p *Post) AfterFind(tx *gorm.DB) (err error) {
+func (p *Post1) AfterFind(tx *gorm.DB) (err error) {
 	p.LikesCount = uint32(len(p.Likes))
 	p.Liked = p.LikesCount > 0
 	return
@@ -31,11 +31,11 @@ type Like struct {
 	Id        string `gorm:"type:uuid;primary_key"`
 	OwnerID   string `gorm:"type:uuid;not null"`
 	OwnerType string `gorm:"type:string;not null"`
-	User      *User  `gorm:"foreignkey:UserId;association_foreignkey:Id"`
+	User      *User1 `gorm:"foreignkey:UserId;association_foreignkey:Id"`
 	UserId    *string
 }
 
-type User struct {
+type User1 struct {
 	Id   string `gorm:"type:uuid;primary_key"`
 	Name string
 }
@@ -47,7 +47,7 @@ func GormTest() {
 	if err != nil {
 		log.Fatal("could not open database")
 	}
-	err = db.AutoMigrate(&User{}, &Post{}, &Like{})
+	err = db.AutoMigrate(&User1{}, &Post1{}, &Like{})
 	if err != nil {
 		log.Fatal("could not migrate database")
 	}
@@ -56,7 +56,7 @@ func GormTest() {
 }
 
 func createTestData(db *gorm.DB) {
-	users := []User{
+	users := []User1{
 		{Id: "0b83313d-1f85-4093-8621-efd2f21419d3", Name: "Shahriar"},
 		{Id: "bddd6566-bcd2-4ad1-8eb9-65a23f5a9856", Name: "John"},
 		{Id: "663c1328-dce2-4527-aecb-7fc478c229c2", Name: "Durand"}}
@@ -68,7 +68,7 @@ func createTestData(db *gorm.DB) {
 		Id:     "45ba45fc-0900-4fcc-80dd-c394170b777b",
 		UserId: &users[0].Id,
 	}
-	post := Post{
+	post := Post1{
 		Id:     "4cebb4c7-d44e-4160-a2df-a06f43211d45",
 		Body:   "Test Post",
 		Likes:  []*Like{&like},
@@ -81,7 +81,7 @@ func createTestData(db *gorm.DB) {
 }
 
 func fetchData(db *gorm.DB) {
-	post := Post{
+	post := Post1{
 		Id: "4cebb4c7-d44e-4160-a2df-a06f43211d45",
 	}
 	if err := db.Preload("Likes").First(&post).Error; err != nil {
