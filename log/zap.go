@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func ZapTest() {
@@ -17,7 +18,7 @@ func ZapTest() {
 	// available options.
 	rawJSON := []byte(`{
 	  "level": "debug",
-	  "encoding": "json",
+	  "encoding": "console",
 	  "outputPaths": ["stdout", "./logs"],
 	  "errorOutputPaths": ["stderr"],
 	  "initialFields": {"foo": "bar"},
@@ -32,11 +33,10 @@ func ZapTest() {
 	if err := json.Unmarshal(rawJSON, &cfg); err != nil {
 		panic(err)
 	}
-	// cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	logger := zap.Must(cfg.Build())
 	defer logger.Sync()
 
 	logger.Info("logger construction succeeded")
 	logger.Error("huge error occurred")
-	logger.WithOptions().Error("huge error occurred")
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/log"
+	"github.com/Shahriar-Sazid/go-random-test/pack"
 )
 
 func main() {
@@ -15,5 +15,5 @@ func main() {
 	// fmt.Println(res)
 
 	// template.TemplateTest()
-	log.ZapTest()
+	pack.PlusPlusTest()
 }

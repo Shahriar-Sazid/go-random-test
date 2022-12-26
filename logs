@@ -10,3 +10,14 @@
 {"level":"info","message":"logger construction succeeded","foo":"bar"}
 {"level":"error","message":"huge error occurred","foo":"bar"}
 {"level":"error","message":"huge error occurred","foo":"bar"}
+{"level":"info","message":"logger construction succeeded","foo":"bar"}
+{"level":"error","message":"huge error occurred","foo":"bar"}
+{"level":"error","message":"huge error occurred","foo":"bar"}
+{"level":"\u001b[34mINFO\u001b[0m","message":"logger construction succeeded","foo":"bar"}
+{"level":"\u001b[31mERROR\u001b[0m","message":"huge error occurred","foo":"bar"}
+{"level":"\u001b[31mERROR\u001b[0m","message":"huge error occurred","foo":"bar"}
+[34mINFO[0m	logger construction succeeded	{"foo": "bar"}
+[31mERROR[0m	huge error occurred	{"foo": "bar"}
+[31mERROR[0m	huge error occurred	{"foo": "bar"}
+[34mINFO[0m	logger construction succeeded	{"foo": "bar"}
+[31mERROR[0m	huge error occurred	{"foo": "bar"}
