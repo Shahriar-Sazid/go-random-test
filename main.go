@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/Shahriar-Sazid/go-random-test/pack"
-)
+import "github.com/Shahriar-Sazid/go-random-test/storage2"
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
@@ -15,5 +13,5 @@ func main() {
 	// fmt.Println(res)
 
 	// template.TemplateTest()
-	pack.PlusPlusTest()
+	storage2.GormTest()
 }
