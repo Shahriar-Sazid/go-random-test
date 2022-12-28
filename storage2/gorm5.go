@@ -11,15 +11,15 @@ import (
 type Post struct {
 	Body   string `gorm:"type:text"`
 	Id     string `gorm:"type:uuid;primary_key"`
-	Likes  []Like
-	User   User `gorm:"foreignkey:UserId;association_foreignkey:Id"`
+	Likes  []Like `gorm:"foreignkey:PostId;references:Id"`
+	User   User   `gorm:"foreignkey:UserId;references:Id"`
 	UserId string
 }
 
 type Like struct {
 	Id     string `gorm:"type:uuid;primary_key"`
-	PostID string `gorm:"type:uuid;not null"`
-	User   User   `gorm:"foreignkey:UserId;association_foreignkey:Id"`
+	PostId string `gorm:"type:uuid;not null"`
+	User   User   `gorm:"foreignkey:UserId;references:Id"`
 	UserId string
 }
 
