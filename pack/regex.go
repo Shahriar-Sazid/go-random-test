@@ -52,7 +52,7 @@ func regex_test() {
 	// fmt.Println(string(out))
 }
 
-func regex_test2() {
+func Regex_test2() {
 	// var featurePattern = regexp.MustCompile(`(?P<feature>\w+)_(?P<period>\d+\w)`)
 
 	r := regexp.MustCompile(`(?P<Year>\d{4})-(?P<Month>\d{2})-(?P<Day>\d{2})`)
