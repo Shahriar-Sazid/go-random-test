@@ -1,7 +1,11 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/location"
+	"fmt"
+	"time"
+
+	routine "github.com/Shahriar-Sazid/go-random-test/goroutine"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -14,5 +18,12 @@ func main() {
 	// res, _ := pack.PageTest(pack.Paging{NextOffset: int(offSet), BatchSize: int(batchSize)})
 	// fmt.Println(res)
 
-	location.ParseUniqueLocation()
+	cr := cron.New()
+
+	_, err := cr.AddFunc("@every 5s", routine.TestChildDieIfParentDie)
+	if err != nil {
+		fmt.Println("error occured")
+	}
+
+	time.Sleep(time.Second * 2)
 }

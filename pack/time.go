@@ -16,3 +16,11 @@ func time_test() {
 	fmt.Println(time.Now().Format(time.Layout))
 
 }
+
+func MilitaryToKitchenTime(militaryTime int) string {
+	hour, minute := militaryTime/100, militaryTime%100
+	t, _ := time.Parse(time.TimeOnly, fmt.Sprintf("%02d:%02d:00", hour, minute))
+	output := t.Format("0" + time.Kitchen)
+	fmt.Printf("output: %s\n", output)
+	return output
+}
