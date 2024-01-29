@@ -128,11 +128,11 @@ type st struct {
 	s string
 	t string
 }
-type cost struct {
+type costMap struct {
 	memo map[st]float32
 }
 
-func (c cost) get(s string, t string) float32 {
+func (c costMap) get(s string, t string) float32 {
 	cost, ok := c.memo[st{s, t}]
 	if ok {
 		return cost
@@ -149,53 +149,53 @@ func (c cost) get(s string, t string) float32 {
 	return cost
 }
 
-func (c cost) set(s string, t string, cost float32) {
+func (c costMap) set(s string, t string, cost float32) {
 	c.memo[st{s, t}] = cost
 }
 
-var cst cost
+var cost costMap
 
-func ed(s string, t string) float32 {
+func ed_map(s string, t string) float32 {
 	sl := len(s)
 	tl := len(t)
 	d := float32(math.Abs(float64(sl - tl)))
 	m := min(sl, tl)
 
 	if sl != tl {
-		return cst.get(s[:m], t[:m]) + d
+		return cost.get(s[:m], t[:m]) + d
 	}
 
 	for i := 0; i < m-1; i++ {
 		var distance float32
 		distance = min(
-			cst.get(s, t[:i]),
-			cst.get(s[:len(s)-1], t[:i]),
-			cst.get(s[:len(s)-1], t[:i+1]),
+			cost.get(s, t[:i]),
+			cost.get(s[:len(s)-1], t[:i]),
+			cost.get(s[:len(s)-1], t[:i+1]),
 		)
 		if s[len(s)-1] != t[i] {
 			distance++
 		}
-		cst.set(s, t[:i+1], distance)
+		cost.set(s, t[:i+1], distance)
 
 		distance = min(
-			cst.get(s[:i], t),
-			cst.get(s[:i], t[:len(t)-1]),
-			cst.get(s[:i+1], t[:len(t)-1]),
+			cost.get(s[:i], t),
+			cost.get(s[:i], t[:len(t)-1]),
+			cost.get(s[:i+1], t[:len(t)-1]),
 		)
 		if s[i] != t[len(t)-1] {
 			distance++
 		}
-		cst.set(s[:i+1], t, distance)
+		cost.set(s[:i+1], t, distance)
 	}
 	distance := min(
-		cst.get(s[:sl-1], t[:tl-1]),
-		cst.get(s, t[:tl-1]),
-		cst.get(s[:sl-1], t),
+		cost.get(s[:sl-1], t[:tl-1]),
+		cost.get(s, t[:tl-1]),
+		cost.get(s[:sl-1], t),
 	)
 	if s[sl-1] != t[tl-1] {
 		distance++
 	}
-	cst.set(s, t, distance)
+	cost.set(s, t, distance)
 
 	return distance
 }
@@ -216,11 +216,6 @@ func TestED() {
 	if err != nil {
 		fmt.Println("Error reading CSV:", err)
 		return
-	}
-
-	for i := 0; i < len(records); i++ {
-		records[i][0] = records[i][0] + records[i][0] + records[i][0]
-		records[i][1] = records[i][1] + records[i][1] + records[i][1]
 	}
 
 	// Print CSV contents
@@ -250,25 +245,25 @@ func TestED() {
 	lev.ReplaceCost = 1
 	lev.DeleteCost = 1
 
-	cst = cost{make(map[st]float32, 10000)}
+	cost = costMap{make(map[st]float32, 10000)}
 	start = time.Now()
 	for _, record := range records {
 		strutil.Similarity(record[0], record[1], lev)
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
-	fmt.Printf("lib took %d ms to execute\n", elapsedTime)
+	fmt.Printf("lib (rapidfuzz port in golang) took %d ms to execute\n", elapsedTime)
 
 	start = time.Now()
 	for _, record := range records {
 		minLen := min(len(record[0]), len(record[1]))
 		for i := 0; i < minLen; i++ {
-			ed(record[0][:i+1], record[1][:i+1])
+			ed_map(record[0][:i+1], record[1][:i+1])
 		}
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
-	fmt.Printf("diagonal function took %d ms to execute\n", elapsedTime)
+	fmt.Printf("diagonal function using map took %d ms to execute\n", elapsedTime)
 
 	start = time.Now()
 	for _, record := range records {
@@ -279,15 +274,28 @@ func TestED() {
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
-	fmt.Printf("lib1 function took %d ms to execute\n", elapsedTime)
+	fmt.Printf("lib (rapidfuzz port in golang) iteratively character by character (like in a trie) took %d ms to execute\n", elapsedTime)
 
-	source := "bagerhat"
-	target := "bosurhat"
-
-	cst = cost{make(map[st]float32)}
-	var distance float32
-	for i := 0; i < len(source); i++ {
-		distance = ed(source[:i+1], target[:i+1])
+	for i := 0; i < len(memoArray[0]); i++ {
+		memoArray[0][i] = float32(i)
 	}
-	fmt.Println(distance)
+	for i := 0; i < len(memoArray); i++ {
+		memoArray[i][0] = float32(i)
+	}
+
+	start = time.Now()
+	for _, record := range records {
+		maxLen := max(len(record[0]), len(record[1]))
+		for i := 0; i < maxLen; i++ {
+			edInternal(record[0][:min(i+1, len(record[0]))], record[1][:min(i+1, len(record[1]))])
+		}
+	}
+	end = time.Now()
+	elapsedTime = end.Sub(start).Milliseconds()
+	fmt.Printf("diagonal function using array took %d ms to execute\n", elapsedTime)
+
+	s := "bagerhat"
+	t := "b"
+
+	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t))
 }
