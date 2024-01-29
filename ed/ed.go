@@ -3,6 +3,7 @@ package ed
 import (
 	"encoding/csv"
 	"fmt"
+	"math"
 	"os"
 	"time"
 
@@ -39,15 +40,6 @@ func edRecursionDP(str1, str2 string, memo map[key]int) int {
 
 	memo[k] = result
 	return result
-}
-
-func min(a, b, c int) int {
-	if a <= b && a <= c {
-		return a
-	} else if b <= a && b <= c {
-		return b
-	}
-	return c
 }
 
 func editDistanceRecursive(str1, str2 string, m, n int) int {
@@ -132,6 +124,82 @@ func editDistanceDP(str1, str2 string) int {
 	return dp[m][n]
 }
 
+type st struct {
+	s string
+	t string
+}
+type cost struct {
+	memo map[st]float32
+}
+
+func (c cost) get(s string, t string) float32 {
+	cost, ok := c.memo[st{s, t}]
+	if ok {
+		return cost
+	}
+
+	if len(t) == 0 {
+		return float32(len(s))
+	}
+
+	if len(s) == 0 {
+		return float32(len(t))
+	}
+
+	return cost
+}
+
+func (c cost) set(s string, t string, cost float32) {
+	c.memo[st{s, t}] = cost
+}
+
+var cst cost
+
+func ed(s string, t string) float32 {
+	sl := len(s)
+	tl := len(t)
+	d := float32(math.Abs(float64(sl - tl)))
+	m := min(sl, tl)
+
+	if sl != tl {
+		return cst.get(s[:m], t[:m]) + d
+	}
+
+	for i := 0; i < m-1; i++ {
+		var distance float32
+		distance = min(
+			cst.get(s, t[:i]),
+			cst.get(s[:len(s)-1], t[:i]),
+			cst.get(s[:len(s)-1], t[:i+1]),
+		)
+		if s[len(s)-1] != t[i] {
+			distance++
+		}
+		cst.set(s, t[:i+1], distance)
+
+		distance = min(
+			cst.get(s[:i], t),
+			cst.get(s[:i], t[:len(t)-1]),
+			cst.get(s[:i+1], t[:len(t)-1]),
+		)
+		if s[i] != t[len(t)-1] {
+			distance++
+		}
+		cst.set(s[:i+1], t, distance)
+	}
+	distance := min(
+		cst.get(s[:sl-1], t[:tl-1]),
+		cst.get(s, t[:tl-1]),
+		cst.get(s[:sl-1], t),
+	)
+	if s[sl-1] != t[tl-1] {
+		distance++
+	}
+	cst.set(s, t, distance)
+
+	return distance
+}
+
 func TestED() {
 	file, err := os.Open("ed_sample.csv")
 	if err != nil {
@@ -150,6 +218,11 @@ func TestED() {
 		return
 	}
 
+	for i := 0; i < len(records); i++ {
+		records[i][0] = records[i][0] + records[i][0] + records[i][0]
+		records[i][1] = records[i][1] + records[i][1] + records[i][1]
+	}
+
 	// Print CSV contents
 
 	memo := make(map[key]int)
@@ -160,7 +233,7 @@ func TestED() {
 	end := time.Now()
 
 	elapsedTime := end.Sub(start).Milliseconds()
-	fmt.Printf("function took %d ms to execute\n", elapsedTime)
+	fmt.Printf("recursion took %d ms to execute\n", elapsedTime)
 
 	start = time.Now()
 	for _, record := range records {
@@ -169,7 +242,7 @@ func TestED() {
 	end = time.Now()
 
 	elapsedTime = end.Sub(start).Milliseconds()
-	fmt.Printf("function took %d ms to execute\n", elapsedTime)
+	fmt.Printf("loop took %d ms to execute\n", elapsedTime)
 
 	lev := metrics.NewLevenshtein()
 	lev.CaseSensitive = true
@@ -177,11 +250,44 @@ func TestED() {
 	lev.ReplaceCost = 1
 	lev.DeleteCost = 1
 
+	cst = cost{make(map[st]float32, 10000)}
 	start = time.Now()
 	for _, record := range records {
 		strutil.Similarity(record[0], record[1], lev)
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
-	fmt.Printf("function took %d ms to execute\n", elapsedTime)
+	fmt.Printf("lib took %d ms to execute\n", elapsedTime)
+
+	start = time.Now()
+	for _, record := range records {
+		minLen := min(len(record[0]), len(record[1]))
+		for i := 0; i < minLen; i++ {
+			ed(record[0][:i+1], record[1][:i+1])
+		}
+	}
+	end = time.Now()
+	elapsedTime = end.Sub(start).Milliseconds()
+	fmt.Printf("diagonal function took %d ms to execute\n", elapsedTime)
+
+	start = time.Now()
+	for _, record := range records {
+		minLen := min(len(record[0]), len(record[1]))
+		for i := 0; i < minLen; i++ {
+			strutil.Similarity(record[0][:i+1], record[1][:i+1], lev)
+		}
+	}
+	end = time.Now()
+	elapsedTime = end.Sub(start).Milliseconds()
+	fmt.Printf("lib1 function took %d ms to execute\n", elapsedTime)
+
+	source := "bagerhat"
+	target := "bosurhat"
+
+	cst = cost{make(map[st]float32)}
+	var distance float32
+	for i := 0; i < len(source); i++ {
+		distance = ed(source[:i+1], target[:i+1])
+	}
+	fmt.Println(distance)
 }

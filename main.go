@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/Shahriar-Sazid/go-random-test/ed"
-)
+import "github.com/Shahriar-Sazid/go-random-test/ed"
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
