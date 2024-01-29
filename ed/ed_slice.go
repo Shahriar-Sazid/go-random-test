@@ -5,13 +5,14 @@ var memoArray [100][100]float32
 func progressiveED(s, t string) float32 {
 	maxLen := max(len(s), len(t))
 	var distance float32
+	runeS, runeT := []rune(s), []rune(t)
 	for i := 0; i < maxLen; i++ {
-		distance = edInternal(s[:min(len(s), i+1)], t[:min(len(t), i+1)])
+		distance = edInternal(runeS[:min(len(runeS), i+1)], runeT[:min(len(runeT), i+1)])
 	}
 	return distance
 }
 
-func edInternal(s, t string) float32 {
+func edInternal(s, t []rune) float32 {
 	if len(s) >= len(t) {
 		for i := 1; i < len(t); i++ {
 			if s[len(s)-1] == t[i-1] {

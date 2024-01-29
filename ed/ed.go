@@ -284,16 +284,9 @@ func TestED() {
 	}
 
 	start = time.Now()
-	var neqCount int
 	for _, record := range records {
-		d1 := progressiveED(record[0], record[1])
-		d2 := lev.Distance(record[0], record[1])
-		if int(d1) != int(d2) {
-			neqCount++
-			fmt.Println("not equal", record[0], record[1], d1, d2)
-		}
+		progressiveED(record[0], record[1])
 	}
-	fmt.Println("not equal count: ", neqCount)
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
 	fmt.Printf("diagonal function using array took %d ms to execute\n", elapsedTime)
