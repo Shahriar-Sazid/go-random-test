@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Shahriar-Sazid/go-random-test/ed"
+import "github.com/Shahriar-Sazid/go-random-test/trie"
 
 func main() {
 	// fmt.Println(toCLikeExpression("cr > 2.7 and rating <34 AND abc = -5 Or def <= 8.9"))
@@ -13,6 +13,5 @@ func main() {
 	// fmt.Println(res)
 
 	// ed.TestEDIndividual()
-	ed.TestED()
-
+	trie.TestTrie()
 }

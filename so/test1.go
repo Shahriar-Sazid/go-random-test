@@ -26,11 +26,3 @@ func Print[T Constraint](x T) {
 	//s := T{}
 	fmt.Printf("Hello %v", x)
 }
-
-func main() {
-	t := Test{
-		Name: "Test",
-	}
-
-	Print(t)
-}

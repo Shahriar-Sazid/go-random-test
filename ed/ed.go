@@ -290,11 +290,6 @@ func TestED() {
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
 	fmt.Printf("diagonal function using array took %d ms to execute\n", elapsedTime)
-
-	s := "ja"
-	t := "jja"
-
-	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t))
 }
 
 func TestEDIndividual() {
