@@ -240,7 +240,7 @@ func TestED() {
 	fmt.Printf("loop took %d ms to execute\n", elapsedTime)
 
 	lev := metrics.NewLevenshtein()
-	lev.CaseSensitive = true
+	lev.CaseSensitive = false
 	lev.InsertCost = 1
 	lev.ReplaceCost = 1
 	lev.DeleteCost = 1
@@ -269,7 +269,7 @@ func TestED() {
 	for _, record := range records {
 		minLen := min(len(record[0]), len(record[1]))
 		for i := 0; i < minLen; i++ {
-			strutil.Similarity(record[0][:i+1], record[1][:i+1], lev)
+			lev.Distance(record[0], record[1])
 		}
 	}
 	end = time.Now()
@@ -284,18 +284,34 @@ func TestED() {
 	}
 
 	start = time.Now()
+	var neqCount int
 	for _, record := range records {
-		maxLen := max(len(record[0]), len(record[1]))
-		for i := 0; i < maxLen; i++ {
-			edInternal(record[0][:min(i+1, len(record[0]))], record[1][:min(i+1, len(record[1]))])
+		d1 := progressiveED(record[0], record[1])
+		d2 := lev.Distance(record[0], record[1])
+		if int(d1) != int(d2) {
+			neqCount++
+			fmt.Println("not equal", record[0], record[1], d1, d2)
 		}
 	}
+	fmt.Println("not equal count: ", neqCount)
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
 	fmt.Printf("diagonal function using array took %d ms to execute\n", elapsedTime)
 
-	s := "bagerhat"
-	t := "b"
+	s := "ja"
+	t := "jja"
 
+	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t))
+}
+
+func TestEDIndividual() {
+	s := "hobaiganj"
+	t := "habiganj"
+	for i := 0; i < len(memoArray[0]); i++ {
+		memoArray[0][i] = float32(i)
+	}
+	for i := 0; i < len(memoArray); i++ {
+		memoArray[i][0] = float32(i)
+	}
 	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t))
 }

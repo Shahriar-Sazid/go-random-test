@@ -12,6 +12,7 @@ func main() {
 	// res, _ := pack.PageTest(pack.Paging{NextOffset: int(offSet), BatchSize: int(batchSize)})
 	// fmt.Println(res)
 
+	// ed.TestEDIndividual()
 	ed.TestED()
 
 }
