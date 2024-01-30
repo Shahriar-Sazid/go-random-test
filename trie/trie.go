@@ -1,6 +1,7 @@
 package trie
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -90,6 +91,6 @@ func TestTrie() {
 
 	results := trie.Query("ap")
 	for _, result := range results {
-		println(result.Word, result.Count)
+		fmt.Println(result.Word, result.Count)
 	}
 }
