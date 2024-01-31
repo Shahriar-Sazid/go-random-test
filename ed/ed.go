@@ -285,7 +285,7 @@ func TestED() {
 
 	start = time.Now()
 	for _, record := range records {
-		progressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1])))
+		ProgressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1])))
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
@@ -324,7 +324,7 @@ func SanityCheck() {
 
 	mismatchCount := 0
 	for _, record := range records {
-		d1 := int(progressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1]))))
+		d1 := int(ProgressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1]))))
 		d2 := lev.Distance(record[0], record[1])
 
 		if d1 != d2 {
@@ -338,13 +338,8 @@ func SanityCheck() {
 }
 
 func TestEDIndividual() {
-	s := "hobaiganj"
-	t := "habiganj"
-	for i := 0; i < len(memoArray[0]); i++ {
-		memoArray[0][i] = float32(i)
-	}
-	for i := 0; i < len(memoArray); i++ {
-		memoArray[i][0] = float32(i)
-	}
-	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t, 0, max(len(s), len(t))))
+	s := "siddirganj"
+	t := "siddhirhgonj"
+	fmt.Printf("edit distance between %s and %s is %f\n", s, t, ProgressiveED(s, t, 0, max(len(s), len(t))))
+	fmt.Printf("match ratio between %s and %s is %f\n", s, t, ProgressiveMatchRatio(s, t, 0, max(len(s), len(t))))
 }

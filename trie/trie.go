@@ -3,6 +3,8 @@ package trie
 import (
 	"fmt"
 	"sort"
+
+	"github.com/Shahriar-Sazid/go-random-test/ed"
 )
 
 type TrieNode struct {
@@ -55,21 +57,51 @@ func (t *Trie) DFS(node *TrieNode, prefix string, output *[]pair) {
 	}
 }
 
-func (t *Trie) FuzzyDFS(word string) {
+type FuzzyResult struct {
+	Word  string
+	Token string
+	Ratio float32
+}
+
+func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 	chars := []rune(word)
 	firstChar := chars[0]
 
 	start := t.Root.Children[firstChar]
 	if start == nil {
-		return
+		return nil
 	}
 
-	var fuzzyDFS func(*TrieNode, int)
-	fuzzyDFS = func(start *TrieNode, level int) {
+	results := make([]FuzzyResult, 0, 100)
+	var fuzzyDFS func(*TrieNode, int, string)
+	fuzzyDFS = func(node *TrieNode, level int, pathVisited string) {
+		if node.IsEnd {
+			matchRatio := ed.ProgressiveMatchRatio(pathVisited, word, level, func() int {
+				if len(pathVisited) >= len(word) {
+					return 0
+				}
+				return len(word) - len(pathVisited)
+			}())
+			if matchRatio >= 0.75 {
+				results = append(results, FuzzyResult{
+					Word:  word,
+					Token: pathVisited,
+					Ratio: matchRatio,
+				})
+			}
+		}
 
+		for nextChar, nextNode := range node.Children {
+			if ed.ProgressiveMatchRatio(pathVisited+string(nextChar), word, level, 1) >= 0.3 {
+				fuzzyDFS(nextNode, level+1, pathVisited+string(nextChar))
+			}
+		}
 	}
 
-	fuzzyDFS(start, 0)
+	ed.ProgressiveMatchRatio(string(firstChar), string(firstChar), 0, 1)
+	fuzzyDFS(start, 1, string(firstChar))
+
+	return results
 }
 
 func (t *Trie) Query(x string) []pair {

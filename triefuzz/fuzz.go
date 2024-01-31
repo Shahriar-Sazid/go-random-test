@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/Shahriar-Sazid/go-random-test/trie"
 )
@@ -47,8 +48,13 @@ func TestTrieFuzzz() {
 		t.Insert(word)
 	}
 
-	results := t.Query("bag")
+	word := "siddhirhgonj"
+	startTime := time.Now()
+	results := t.FuzzySearch(word)
+	endTime := time.Now()
+	elapsedTime := endTime.Sub(startTime).Microseconds()
+	fmt.Printf("trie fuzz took %d us to search %s\n", elapsedTime, word)
 	for _, result := range results {
-		fmt.Println(result.Word, result.Count)
+		fmt.Println(result.Word, result.Token, result.Ratio)
 	}
 }

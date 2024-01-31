@@ -1,14 +1,34 @@
 package ed
 
 var memoArray [100][100]float32
+var counter int
 
-func progressiveED(s, t string, progressSoFar, steps int) float32 {
-	var distance float32
+func init() {
+	for i := 0; i < len(memoArray[0]); i++ {
+		memoArray[0][i] = float32(i)
+	}
+	for i := 0; i < len(memoArray); i++ {
+		memoArray[i][0] = float32(i)
+	}
+}
+
+func ProgressiveED(s, t string, progressSoFar, steps int) float32 {
+	distance := memoArray[len(t)][len(s)]
 	runeS, runeT := []rune(s), []rune(t)
 	for i := progressSoFar; i < progressSoFar+steps; i++ {
 		distance = edInternal(runeS[:min(len(runeS), i+1)], runeT[:min(len(runeT), i+1)])
 	}
 	return distance
+}
+
+func ProgressiveMatchRatio(s, t string, progressSoFar, steps int) float32 {
+	distance := ProgressiveED(s, t, progressSoFar, steps)
+	maxLen := progressSoFar + steps
+
+	ratio := 1 - (distance / float32(maxLen))
+	counter++
+	// fmt.Printf("%d. match ratio of %s,%s is %f\n", counter, s[:min(len(s), progressSoFar+steps)], t[:min(len(t), progressSoFar+steps)], ratio)
+	return ratio
 }
 
 func edInternal(s, t []rune) float32 {

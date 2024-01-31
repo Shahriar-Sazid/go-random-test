@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/ed"
+	"github.com/Shahriar-Sazid/go-random-test/triefuzz"
 )
 
 func main() {
@@ -14,5 +14,6 @@ func main() {
 	// res, _ := pack.PageTest(pack.Paging{NextOffset: int(offSet), BatchSize: int(batchSize)})
 	// fmt.Println(res)
 
-	ed.SanityCheck()
+	// ed.TestEDIndividual()
+	triefuzz.TestTrieFuzzz()
 }
