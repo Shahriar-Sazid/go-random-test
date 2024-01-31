@@ -47,7 +47,7 @@ func TestTrieFuzzz() {
 		t.Insert(word)
 	}
 
-	results := t.Query("bagh")
+	results := t.Query("bag")
 	for _, result := range results {
 		fmt.Println(result.Word, result.Count)
 	}

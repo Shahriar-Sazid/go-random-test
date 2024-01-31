@@ -55,6 +55,23 @@ func (t *Trie) DFS(node *TrieNode, prefix string, output *[]pair) {
 	}
 }
 
+func (t *Trie) FuzzyDFS(word string) {
+	chars := []rune(word)
+	firstChar := chars[0]
+
+	start := t.Root.Children[firstChar]
+	if start == nil {
+		return
+	}
+
+	var fuzzyDFS func(*TrieNode, int)
+	fuzzyDFS = func(start *TrieNode, level int) {
+
+	}
+
+	fuzzyDFS(start, 0)
+}
+
 func (t *Trie) Query(x string) []pair {
 	output := make([]pair, 0)
 	node := t.Root

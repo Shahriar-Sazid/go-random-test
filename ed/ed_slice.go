@@ -2,11 +2,10 @@ package ed
 
 var memoArray [100][100]float32
 
-func progressiveED(s, t string) float32 {
-	maxLen := max(len(s), len(t))
+func progressiveED(s, t string, progressSoFar, steps int) float32 {
 	var distance float32
 	runeS, runeT := []rune(s), []rune(t)
-	for i := 0; i < maxLen; i++ {
+	for i := progressSoFar; i < progressSoFar+steps; i++ {
 		distance = edInternal(runeS[:min(len(runeS), i+1)], runeT[:min(len(runeT), i+1)])
 	}
 	return distance

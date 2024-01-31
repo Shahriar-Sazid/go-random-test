@@ -285,7 +285,7 @@ func TestED() {
 
 	start = time.Now()
 	for _, record := range records {
-		progressiveED(record[0], record[1])
+		progressiveED(record[0], record[1], 0)
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
@@ -301,5 +301,5 @@ func TestEDIndividual() {
 	for i := 0; i < len(memoArray); i++ {
 		memoArray[i][0] = float32(i)
 	}
-	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t))
+	fmt.Printf("edit distance between %s and %s is %f\n", s, t, progressiveED(s, t, 0, max(len(s), len(t))))
 }
