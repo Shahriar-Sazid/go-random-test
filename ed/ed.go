@@ -285,11 +285,56 @@ func TestED() {
 
 	start = time.Now()
 	for _, record := range records {
-		progressiveED(record[0], record[1], 0)
+		progressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1])))
 	}
 	end = time.Now()
 	elapsedTime = end.Sub(start).Milliseconds()
 	fmt.Printf("diagonal function using array took %d ms to execute\n", elapsedTime)
+}
+
+func SanityCheck() {
+	file, err := os.Open("ed_sample.csv")
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return
+	}
+	defer file.Close()
+
+	// Create a CSV reader
+	reader := csv.NewReader(file)
+
+	// Read all records from CSV
+	records, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error reading CSV:", err)
+		return
+	}
+	for i := 0; i < len(memoArray[0]); i++ {
+		memoArray[0][i] = float32(i)
+	}
+	for i := 0; i < len(memoArray); i++ {
+		memoArray[i][0] = float32(i)
+	}
+
+	lev := metrics.NewLevenshtein()
+	lev.CaseSensitive = false
+	lev.InsertCost = 1
+	lev.ReplaceCost = 1
+	lev.DeleteCost = 1
+
+	mismatchCount := 0
+	for _, record := range records {
+		d1 := int(progressiveED(record[0], record[1], 0, max(len(record[0]), len(record[1]))))
+		d2 := lev.Distance(record[0], record[1])
+
+		if d1 != d2 {
+			fmt.Printf("mismatch found: %s, %s, %d, %d\n", record[0], record[1], d1, d2)
+			mismatchCount++
+		}
+	}
+	if mismatchCount == 0 {
+		fmt.Println("good job! no mismatch found!")
+	}
 }
 
 func TestEDIndividual() {
