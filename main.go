@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/triefuzz"
+	"github.com/Shahriar-Sazid/go-random-test/trie"
 )
 
 func main() {
@@ -15,5 +15,10 @@ func main() {
 	// fmt.Println(res)
 
 	// ed.TestEDIndividual()
-	triefuzz.TestTrieFuzzz()
+	// triefuzz.TestTrieFuzzz()
+	// for i := 0; i < 10; i++ {
+	// 	trie.TestTrieFuzz()
+	// 	triefuzz.TestTrieFuzz()
+	// }
+	trie.TestTrieFuzz()
 }

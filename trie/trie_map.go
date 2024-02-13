@@ -76,7 +76,7 @@ func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 	var fuzzyDFS func(*TrieNode, int, string)
 	fuzzyDFS = func(node *TrieNode, level int, pathVisited string) {
 		if node.IsEnd {
-			matchRatio := ed.ProgressiveMatchRatio(pathVisited, word, level, func() int {
+			matchRatio := ed.IncrementalMatchRatio(pathVisited, word, level, func() int {
 				if len(pathVisited) >= len(word) {
 					return 0
 				}
@@ -92,13 +92,13 @@ func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 		}
 
 		for nextChar, nextNode := range node.Children {
-			if ed.ProgressiveMatchRatio(pathVisited+string(nextChar), word, level, 1) >= 0.3 {
+			if ed.IncrementalMatchRatio(pathVisited+string(nextChar), word, level, 1) >= 0.3 {
 				fuzzyDFS(nextNode, level+1, pathVisited+string(nextChar))
 			}
 		}
 	}
 
-	ed.ProgressiveMatchRatio(string(firstChar), string(firstChar), 0, 1)
+	ed.IncrementalMatchRatio(string(firstChar), string(firstChar), 0, 1)
 	fuzzyDFS(start, 1, string(firstChar))
 
 	return results

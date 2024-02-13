@@ -11,7 +11,7 @@ import (
 	"github.com/Shahriar-Sazid/go-random-test/trie"
 )
 
-func TestTrieFuzzz() {
+func TestTrieFuzz() {
 	file, err := os.Open("place_mapping.csv")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
@@ -50,11 +50,11 @@ func TestTrieFuzzz() {
 
 	word := "siddhirhgonj"
 	startTime := time.Now()
-	results := t.FuzzySearch(word)
+	_ = t.FuzzySearch(word)
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime).Microseconds()
 	fmt.Printf("trie fuzz took %d us to search %s\n", elapsedTime, word)
-	for _, result := range results {
-		fmt.Println(result.Word, result.Token, result.Ratio)
-	}
+	// for _, result := range results {
+	// 	fmt.Println(result.Word, result.Token, result.Ratio)
+	// }
 }
