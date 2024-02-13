@@ -21,7 +21,7 @@ func si(elements []rune, i int) rune {
 	}
 	return ' '
 }
-func safe_cost(cost [26][26]float32, i, j rune) float32 {
+func safe_cost(cost [26][26]float32, i, j rune) (result float32) {
 	ii := rIndex(i)
 	ji := rIndex(j)
 	if ii >= 0 && ii < 26 && ji >= 0 && ji < 26 {
@@ -192,9 +192,9 @@ func incrementalED(s, t []rune) float32 {
 			if t[len(t)-1] == s[j-1] {
 				memoArray[len(t)][j] = memoArray[len(t)-1][j-1]
 			} else {
-				rc := memoArray[len(t)-1][j-1] + safe_cost(replaceCost, si(s, j-1), t[len(t)-1])
+				rc := memoArray[len(t)-1][j-1] + safe_cost(replaceCost, s[j-1], t[len(t)-1])
 				ic := memoArray[len(t)-1][j] + safe_cost(insertionCost, t[len(t)-2], t[len(t)-1])
-				dc := memoArray[len(t)][j-1] + safe_del_cost(deletionCost, si(s, j-1))
+				dc := memoArray[len(t)][j-1] + safe_del_cost(deletionCost, s[j-1])
 				memoArray[len(t)][j] = min(rc, ic, dc)
 			}
 		}
