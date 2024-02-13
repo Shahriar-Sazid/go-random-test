@@ -324,16 +324,18 @@ func SanityCheck() {
 
 	mismatchCount := 0
 	for _, record := range records {
-		d1 := int(IncrementalED(record[0], record[1], 0, max(len(record[0]), len(record[1]))))
+		d1 := IncrementalED(record[0], record[1], 0, max(len(record[0]), len(record[1])))
 		d2 := lev.Distance(record[0], record[1])
 
-		if d1 != d2 {
-			fmt.Printf("mismatch found: %s, %s, %d, %d\n", record[0], record[1], d1, d2)
+		if d1 != float32(d2) {
+			fmt.Printf("mismatch found: %s, %s, %f, %d\n", record[0], record[1], d1, d2)
 			mismatchCount++
 		}
 	}
 	if mismatchCount == 0 {
 		fmt.Println("good job! no mismatch found!")
+	} else {
+		fmt.Printf("%d mismatch found!\n", mismatchCount)
 	}
 }
 

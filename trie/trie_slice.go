@@ -184,19 +184,30 @@ func TestTrieFuzz() {
 		words = append(words, strings.Fields(strings.ToLower(zones))...)
 		words = append(words, strings.Fields(strings.ToLower(areas))...)
 	}
-	t := NewSTrie()
+	t1 := NewSTrie()
+	t2 := NewTrie()
 
 	for _, word := range words {
-		t.Insert(word)
+		t1.Insert(word)
+		t2.Insert(word)
 	}
 
-	word := "siddhirhgonjsfds"
+	word := "siddirganj"
 	startTime := time.Now()
-	_ = t.FuzzySearch(word)
+	results := t1.FuzzySearch(word)
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime).Microseconds()
 	fmt.Printf("strie fuzz took %d us to search %s\n", elapsedTime, word)
-	// for _, result := range results {
-	// 	fmt.Println(result.Word, result.Token, result.Ratio)
-	// }
+	for _, result := range results {
+		fmt.Println(result.Word, result.Token, result.Ratio)
+	}
+
+	startTime = time.Now()
+	results = t2.FuzzySearch(word)
+	endTime = time.Now()
+	elapsedTime = endTime.Sub(startTime).Microseconds()
+	fmt.Printf("trie fuzz took %d us to search %s\n", elapsedTime, word)
+	for _, result := range results {
+		fmt.Println(result.Word, result.Token, result.Ratio)
+	}
 }
