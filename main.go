@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
+
+	semioptimizedtrieed "github.com/Shahriar-Sazid/go-random-test/semioptimized_trie_ed"
 	"github.com/Shahriar-Sazid/go-random-test/trie"
-	"github.com/Shahriar-Sazid/go-random-test/triefuzz"
 )
 
 func main() {
@@ -19,8 +21,15 @@ func main() {
 	// triefuzz.TestTrieFuzzz()
 	// for i := 0; i < 10; i++ {
 	// 	trie.TestTrieFuzz()
-	triefuzz.TestTrieFuzz()
+	// triefuzz.TestTrieFuzz()
 	// }
-	trie.TestTrieFuzz()
+	word := "moymensing"
+	for i := 0; i < 10; i++ {
+		trie.TestTrieFuzz(word)
+		semioptimizedtrieed.TestTrieFuzz(word)
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+	}
 	// ed.SanityCheck()
 }

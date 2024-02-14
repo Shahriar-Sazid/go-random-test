@@ -1,41 +1,31 @@
 package ed
 
-import (
-	"fmt"
-)
+type FuzzyResult struct {
+	Word  string
+	Token string
+	Ratio float32
+}
 
 var memoArray [100][100]float32
 
-var replaceCost [26][26]float32
-var insertionCost [26][26]float32
-var deletionCost [26]float32
+var replaceCost []float32
+var insertionCost []float32
+var deletionCost []float32
 
-func rIndex(r rune) rune {
+func runeIndex(r rune) int {
 	i := r - 'a'
-	return i
+	return int(i)
 }
 
-func si(elements []rune, i int) rune {
-	if i >= 0 && i < len(elements) {
-		return elements[i]
-	}
-	return ' '
-}
-func safe_cost(cost [26][26]float32, i, j rune) (result float32) {
-	ii := rIndex(i)
-	ji := rIndex(j)
-	if ii >= 0 && ii < 26 && ji >= 0 && ji < 26 {
-		return cost[ii][ji]
-	}
-	return 1
+func twoToOneD(i, j rune, rowSize int) int {
+	return runeIndex(i)*rowSize + runeIndex(j)
 }
 
-func safe_del_cost(cost [26]float32, i rune) float32 {
-	ii := rIndex(i)
-	if ii >= 0 && ii < 26 {
-		return cost[ii]
+func safe_index[T any](s []T, index int, standard T) T {
+	if index < 0 || index >= len(s) {
+		return standard
 	}
-	return 1
+	return s[index]
 }
 
 func getHomophoneCost() [26][26]float32 {
@@ -73,8 +63,8 @@ func getHomophoneCost() [26][26]float32 {
 				if c1 == c2 {
 					continue
 				}
-				c1i := rIndex(c1)
-				c2i := rIndex(c2)
+				c1i := runeIndex(c1)
+				c2i := runeIndex(c2)
 				homophoneCost[c1i][c2i] = group.cost
 			}
 		}
@@ -110,8 +100,8 @@ func getAdjacentKeyCost() [26][26]float32 {
 			}
 
 			if prev != 0 && isAlpha(prev) && isAlpha(letter) {
-				p := rIndex(prev)
-				l := rIndex(letter)
+				p := runeIndex(prev)
+				l := runeIndex(letter)
 				adjacentKeyCost[p][l] = 0.7
 				adjacentKeyCost[l][p] = 0.7
 			}
@@ -127,32 +117,34 @@ func init() {
 	for i := 0; i < len(memoArray); i++ {
 		memoArray[i][0] = float32(i)
 	}
+	replaceCost = make([]float32, 26*26)
+	insertionCost = make([]float32, 26*26)
+	deletionCost = make([]float32, 26)
 
 	homophoneCost := getHomophoneCost()
 	adjacentKeyCost := getAdjacentKeyCost()
 
-	for i := 0; i < len(replaceCost); i++ {
-		for j := 0; j < len(replaceCost[i]); j++ {
-			replaceCost[i][j] = adjacentKeyCost[i][j]
-			replaceCost[i][j] = min(adjacentKeyCost[i][j], homophoneCost[i][j])
+	for i := 0; i < len(adjacentKeyCost); i++ {
+		for j := 0; j < len(adjacentKeyCost[i]); j++ {
+			replaceCost[i*26+j] = adjacentKeyCost[i][j]
+			replaceCost[i*26+j] = min(adjacentKeyCost[i][j], homophoneCost[i][j])
 		}
 	}
 
-	for i := 0; i < len(insertionCost); i++ {
-		for j := 0; j < len(insertionCost[i]); j++ {
-			insertionCost[i][j] = adjacentKeyCost[i][j]
+	for i := 0; i < len(adjacentKeyCost); i++ {
+		for j := 0; j < len(adjacentKeyCost[i]); j++ {
+			insertionCost[i*26+j] = adjacentKeyCost[i][j]
 		}
 	}
-	insertionCost['s'-'a']['h'-'a'] = 0.3
-	insertionCost['t'-'a']['h'-'a'] = 0.3
-	insertionCost['g'-'a']['h'-'a'] = 0.3
-	insertionCost['b'-'a']['h'-'a'] = 0.3
+	insertionCost[('s'-'a')*26+('h'-'a')] = 0.3
+	insertionCost[('t'-'a')*26+('h'-'a')] = 0.3
+	insertionCost[('g'-'a')*26+('h'-'a')] = 0.3
+	insertionCost[('b'-'a')*26+('h'-'a')] = 0.3
 
 	for i := 0; i < len(deletionCost); i++ {
 		deletionCost[i] = 1
 	}
 	deletionCost['h'-'a'] = 0.5
-	fmt.Println(deletionCost)
 }
 
 func IncrementalED(s, t string, progressSoFar, steps int) float32 {
@@ -179,9 +171,9 @@ func incrementalED(s, t []rune) float32 {
 			if s[len(s)-1] == t[i-1] {
 				memoArray[i][len(s)] = memoArray[i-1][len(s)-1]
 			} else {
-				rc := memoArray[i-1][len(s)-1] + safe_cost(replaceCost, s[len(s)-1], t[i-1])
-				ic := memoArray[i-1][len(s)] + safe_cost(insertionCost, si(t, i-2), si(t, i-1))
-				dc := memoArray[i][len(s)-1] + safe_del_cost(deletionCost, s[len(s)-1])
+				rc := memoArray[i-1][len(s)-1] + safe_index(replaceCost, twoToOneD(s[len(s)-1], t[i-1], 26), 1)
+				ic := memoArray[i-1][len(s)] + safe_index(insertionCost, twoToOneD(safe_index(t, i-2, ' '), safe_index(t, i-1, ' '), 26), 1)
+				dc := memoArray[i][len(s)-1] + safe_index(deletionCost, runeIndex(s[len(s)-1]), 1)
 				memoArray[i][len(s)] = min(rc, ic, dc)
 			}
 		}
@@ -192,9 +184,9 @@ func incrementalED(s, t []rune) float32 {
 			if t[len(t)-1] == s[j-1] {
 				memoArray[len(t)][j] = memoArray[len(t)-1][j-1]
 			} else {
-				rc := memoArray[len(t)-1][j-1] + safe_cost(replaceCost, s[j-1], t[len(t)-1])
-				ic := memoArray[len(t)-1][j] + safe_cost(insertionCost, t[len(t)-2], t[len(t)-1])
-				dc := memoArray[len(t)][j-1] + safe_del_cost(deletionCost, s[j-1])
+				rc := memoArray[len(t)-1][j-1] + safe_index(replaceCost, twoToOneD(s[j-1], t[len(t)-1], 26), 1)
+				ic := memoArray[len(t)-1][j] + safe_index(insertionCost, twoToOneD(t[len(t)-2], t[len(t)-1], 26), 1)
+				dc := memoArray[len(t)][j-1] + safe_index(deletionCost, runeIndex(s[j-1]), 1)
 				memoArray[len(t)][j] = min(rc, ic, dc)
 			}
 		}
@@ -203,9 +195,9 @@ func incrementalED(s, t []rune) float32 {
 	if s[len(s)-1] == t[len(t)-1] {
 		memoArray[len(t)][len(s)] = memoArray[len(t)-1][len(s)-1]
 	} else {
-		rc := memoArray[len(t)-1][len(s)-1] + safe_cost(replaceCost, s[len(s)-1], t[len(t)-1])
-		ic := memoArray[len(t)-1][len(s)] + safe_cost(insertionCost, si(t, len(t)-2), si(t, len(t)-1))
-		dc := memoArray[len(t)][len(s)-1] + safe_del_cost(deletionCost, s[len(s)-1])
+		rc := memoArray[len(t)-1][len(s)-1] + safe_index(replaceCost, twoToOneD(s[len(s)-1], t[len(t)-1], 26), 1)
+		ic := memoArray[len(t)-1][len(s)] + safe_index(insertionCost, twoToOneD(safe_index(t, len(t)-2, ' '), safe_index(t, len(t)-1, ' '), 26), 1)
+		dc := memoArray[len(t)][len(s)-1] + safe_index(deletionCost, runeIndex(s[len(s)-1]), 1)
 		memoArray[len(t)][len(s)] = min(rc, ic, dc)
 	}
 

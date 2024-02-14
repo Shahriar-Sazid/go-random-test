@@ -1,10 +1,8 @@
-package trie
+package semioptimizedtrieed
 
 import (
 	"fmt"
 	"sort"
-
-	"github.com/Shahriar-Sazid/go-random-test/ed"
 )
 
 type TrieNode struct {
@@ -57,12 +55,6 @@ func (t *Trie) DFS(node *TrieNode, prefix string, output *[]pair) {
 	}
 }
 
-type FuzzyResult struct {
-	Word  string
-	Token string
-	Ratio float32
-}
-
 func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 	chars := []rune(word)
 	firstChar := chars[0]
@@ -76,7 +68,7 @@ func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 	var fuzzyDFS func(*TrieNode, int, string)
 	fuzzyDFS = func(node *TrieNode, level int, pathVisited string) {
 		if node.IsEnd {
-			matchRatio := ed.IncrementalMatchRatio(pathVisited, word, level, func() int {
+			matchRatio := IncrementalMatchRatio2D(pathVisited, word, level, func() int {
 				if len(pathVisited) >= len(word) {
 					return 0
 				}
@@ -92,13 +84,13 @@ func (t *Trie) FuzzySearch(word string) []FuzzyResult {
 		}
 
 		for nextChar, nextNode := range node.Children {
-			if ed.IncrementalMatchRatio(pathVisited+string(nextChar), word, level, 1) >= 0.3 {
+			if IncrementalMatchRatio2D(pathVisited+string(nextChar), word, level, 1) >= 0.3 {
 				fuzzyDFS(nextNode, level+1, pathVisited+string(nextChar))
 			}
 		}
 	}
 
-	ed.IncrementalMatchRatio(string(firstChar), string(firstChar), 0, 1)
+	IncrementalMatchRatio2D(string(firstChar), string(firstChar), 0, 1)
 	fuzzyDFS(start, 1, string(firstChar))
 
 	return results

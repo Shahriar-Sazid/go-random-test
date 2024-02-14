@@ -1,4 +1,4 @@
-package trie
+package semioptimizedtrieed
 
 import (
 	"encoding/csv"
@@ -9,15 +9,7 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/Shahriar-Sazid/go-random-test/ed"
 )
-
-type FuzzyResult struct {
-	Word  string
-	Token string
-	Ratio float32
-}
 
 type STrieNode struct {
 	Char     rune
@@ -93,6 +85,12 @@ func (t *STrie) Insert(word string) {
 
 var ranges [][2]int
 
+type FuzzyResult struct {
+	Word  string
+	Token string
+	Ratio float32
+}
+
 func init() {
 	ranges = [][2]int{{0, 0}, {1, 1}, {2, 2}, {3, 3}, {3, 5}, {4, 7}, {5, 8}, {5, 9}, {6, 11}, {7, 12}, {8, 13}, {9, 14}, {9, 15}, {10, 16}, {11, 17}, {12, 19}, {13, 20}}
 }
@@ -122,7 +120,7 @@ func (t *STrie) FuzzySearch(word string) []FuzzyResult {
 	var fuzzyDFS func(*STrieNode, int, string)
 	fuzzyDFS = func(node *STrieNode, level int, pathVisited string) {
 		if node.IsEnd {
-			matchRatio := ed.IncrementalMatchRatio(pathVisited, word, level, func() int {
+			matchRatio := IncrementalMatchRatio2D(pathVisited, word, level, func() int {
 				if len(pathVisited) >= len(word) {
 					return 0
 				}
@@ -143,7 +141,7 @@ func (t *STrie) FuzzySearch(word string) []FuzzyResult {
 		}
 
 		for _, nextNode := range node.Children {
-			incrementalMR := ed.IncrementalMatchRatio(pathVisited+string(nextNode.Char), word, level, 1)
+			incrementalMR := IncrementalMatchRatio2D(pathVisited+string(nextNode.Char), word, level, 1)
 			if ((len(pathVisited) >= 0 && len(pathVisited) < 4 && incrementalMR >= 0.25) ||
 				(len(pathVisited) >= 4 && len(pathVisited) < 6 && incrementalMR >= 0.4) ||
 				(len(pathVisited) >= 6 && len(pathVisited) < 8 && incrementalMR >= 0.5) ||
@@ -154,7 +152,7 @@ func (t *STrie) FuzzySearch(word string) []FuzzyResult {
 		}
 	}
 
-	ed.IncrementalMatchRatio(string(firstChar), string(firstChar), 0, 1)
+	IncrementalMatchRatio2D(string(firstChar), string(firstChar), 0, 1)
 	fuzzyDFS(start, 1, string(firstChar))
 	return results
 }
@@ -191,17 +189,29 @@ func TestTrieFuzz(word string) {
 		words = append(words, strings.Fields(strings.ToLower(areas))...)
 	}
 	t1 := NewSTrie()
+	t2 := NewTrie()
 
 	for _, word := range words {
 		t1.Insert(word)
+		t2.Insert(word)
 	}
 
 	startTime := time.Now()
 	results := t1.FuzzySearch(word)
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime).Microseconds()
-	fmt.Printf("optimized trie fuzz took %d us to search %s\n", elapsedTime, word)
+	fmt.Printf("semioptimized trie fuzz took %d us to search %s\n", elapsedTime, word)
 	for _, result := range results {
 		fmt.Println(result.Word, result.Token, result.Ratio)
 	}
+
+	startTime = time.Now()
+	results = t2.FuzzySearch(word)
+	endTime = time.Now()
+	elapsedTime = endTime.Sub(startTime).Microseconds()
+	fmt.Printf("low optimized trie fuzz took %d us to search %s\n", elapsedTime, word)
+	for _, result := range results {
+		fmt.Println(result.Word, result.Token, result.Ratio)
+	}
+
 }
