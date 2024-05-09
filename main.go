@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Shahriar-Sazid/go-random-test/trie"
+	"github.com/Shahriar-Sazid/go-random-test/pack"
 )
 
 func main() {
@@ -20,5 +20,7 @@ func main() {
 	// 	trie.TestTrieFuzz()
 	// 	triefuzz.TestTrieFuzz()
 	// }
-	trie.TestTrieFuzz()
+	// trie.TestTrieFuzz()
+
+	pack.TestMapVSSlice()
 }
